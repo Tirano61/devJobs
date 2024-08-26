@@ -8,7 +8,11 @@ const path    = require('path');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const flash = require('connect-flash');
+const passport = require('passport');
+
+
 
 require('dotenv').config({path: '.env'})
 
@@ -39,7 +43,19 @@ app.use(session({
     saveUninitialized: false,
     store: MongoStore.create({mongoUrl: process.env.DATABASE})
 }));
+//! Inicializar Passport
+app.use(passport.initialize());
+app.use(passport.session());
+require('./config/passport')
 
+//! Alertas y flash messages
+app.use(flash());
+
+//! Crear nuestro middleware
+app.use((req, res, next)=>{
+    res.locals.mensajes = req.flash();
+    next();
+});
 
 app.use('/', router());
 

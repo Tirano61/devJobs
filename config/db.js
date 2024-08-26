@@ -1,4 +1,6 @@
 
+
+
 const mongoose = require('mongoose');
 require('dotenv').config({path: '.env'});
 
@@ -10,3 +12,4 @@ mongoose.connection.on('error', (error)=>{
 
 //! importar los modelos 
 require('../models/vacantes');
+require('../models/usuarios');
