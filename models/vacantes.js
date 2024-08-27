@@ -44,7 +44,7 @@ const vacantesSchema = new mongoose.Schema({
         email: String,
         cv: String
     }],
-    autor:{
+    autor: {
         type: mongoose.Schema.ObjectId,
         ref: 'Usuarios',
         required: 'El autor es obligatorio'
