@@ -19,13 +19,14 @@ exports.verificarUsuario = (req, res, next) =>{
     res.redirect('/iniciar-sesion');
 }
 
-exports.mostrarPanel = async(req, res, next) =>{
-    //! Consultar el usuario autenticado
-    const vacantes = await Vacante.find({autor: req.user._id});
+exports.mostrarPanel = async (req, res, next) =>{
+    //! Consultar el usuario autenticado,  
+    //! Se le agrego el .lean() para que pase los datos a la vista
+    const vacantes = await Vacante.find({autor: req.user._id}).lean();
 
     res.render('administracion',{
         nombrePagina: 'Panel de Administración',
         tagline: 'Crea y administra tus vacantes desde aquí',
-        vacantes
+        vacantes: vacantes
     })
-};
+}

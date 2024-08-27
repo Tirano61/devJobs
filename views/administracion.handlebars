@@ -8,25 +8,24 @@
     </div>
     <h2>Tus vacantes</h2>
     {{#if vacantes.length}}
-        {{#each vacantes}}
+        {{#each vacantes }}
             <div class="vacante panel-administracion">
                 <div class="caja">
-                    <h3>{{vacantes.empresa}}</h3>
-                    <p class="puesto">{{vacantes.titulo}}</p>
+                    <h3>{{empresa}}</h3>
+                    <p class="puesto">{{titulo}}</p>
                 </div>
                 <div class="centrar-vertical caja">
-                    <a href="/candidato/{{vacantes.id}}" class="btn btn-amarillo">Candidatos</a>
+                    <a href="/candidatos/{{id}}" class="btn btn-amarillo">Candidatos</a>
                 </div>
                 <div class="centrar-vertical caja">
-                    <a href="/vacantes/editar/{{vacantes.url}}" class="btn btn-verde">Editar</a>
+                    <a href="/vacantes/editar/{{url}}" class="btn btn-verde">Editar</a>
                 </div>
                 <div class="centrar-vertical caja">
-                    <a href="#" data-eliminar={{vacantes.id}} class="btn btn-rojo">Eliminar</a>
+                    <a href="#" data-eliminar={{id}}, class="btn btn-rojo">Eliminar</a>
                 </div>
-
             </div>
-            
         {{/each}}
     {{else}}
+
     {{/if}}
 </main>
