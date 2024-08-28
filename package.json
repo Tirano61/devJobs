@@ -16,6 +16,7 @@
     "@types/express-validator": "^3.0.0",
     "@types/handlebars": "^4.1.0",
     "@types/mongoose": "^5.11.97",
+    "axios": "^1.7.5",
     "bcrypt": "^5.1.1",
     "concurrently": "^8.2.2",
     "connect-flash": "^0.1.1",
@@ -30,7 +31,8 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "shortid": "^2.2.16",
-    "slug": "^9.1.0"
+    "slug": "^9.1.0",
+    "sweetalert2": "^11.12.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

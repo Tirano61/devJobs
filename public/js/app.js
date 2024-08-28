@@ -1,4 +1,6 @@
 
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 document.addEventListener('DOMContentLoaded', () =>{
@@ -14,6 +16,11 @@ document.addEventListener('DOMContentLoaded', () =>{
         skills.addEventListener('click', agregarSkils);
         //! Una vez que estamos en editar llamar la funcion
         skillSeleccionados();
+    }
+
+    const vacantesListado = document.querySelector('.panel-administracion');
+    if(vacantesListado){
+        vacantesListado.addEventListener('click', accionesListado);
     }
 })
 const skillsPrototype = new Set();
@@ -52,4 +59,39 @@ const limpiarAlertas = () =>{
             clearInterval(interval);
         }
     }, 1500);
+}
+
+//! Eliminar vacante
+const accionesListado = e => {
+    e.preventDefault();
+     const url = `${location.origin}/vacantes/eliminar/${e.target.eliminar}`;
+     console.log(url);
+    return;
+    
+    if(e.target.dataset.eliminar){
+        //! Eliminar por axios
+        Swal.fire({
+            title: "Confirmar eliminación?",
+            text: "Una vez eliminada no se puede recuperar!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, Eliminar!",
+            cancelButtonText: "No, Cancelar!"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              //! Enviar la peticion  con axios
+
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success"
+              });
+            }
+          });
+    }else if(e.target.tagName === 'A'){
+        window.location.href = e.target.href;
+    }
+    
 }

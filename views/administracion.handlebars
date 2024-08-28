@@ -4,7 +4,7 @@
     <h2>Navegación</h2>
     <div class="botones separador">
         <a href="/editar-perfil" class="btn btn-azul">Editar Perfil</a>
-        <a href="/vacantes-nueva" class="btn btn-verde">Editar Perfil</a>
+        <a href="/vacantes/nueva" class="btn btn-verde">Nueva Vacante</a>
     </div>
     <h2>Tus vacantes</h2>
     {{#if vacantes.length}}
@@ -21,7 +21,7 @@
                     <a href="/vacantes/editar/{{url}}" class="btn btn-verde">Editar</a>
                 </div>
                 <div class="centrar-vertical caja">
-                    <a href="#" data-eliminar={{id}}, class="btn btn-rojo">Eliminar</a>
+                    <a href="#" data-eliminar="{{_id}}" class="btn btn-rojo">Eliminar</a>
                 </div>
             </div>
         {{/each}}

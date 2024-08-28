@@ -65,6 +65,8 @@ exports.formIniciarSesion = async (req, res, next) =>{
 exports.formEditarPerfil = (req, res, next) =>{
     res.render('editar-perfil', {
         nombrePagina: 'Edita tu perfil en DevJobs',
+        cerrarSesion: true,
+        nombre: req.user.nombre,
         usuario: req.user.toObject()
     })
 }
@@ -80,4 +82,31 @@ exports.editarPerfil = async(req, res) =>{
     await usuario.save();
     req.flash('correcto', 'Cambios guardados correctamente')
     res.redirect('/administracion');
+}
+
+//! Sanitizar y validar formulario de editar perfiles
+
+exports.validarPerfil = async(req, res) =>{
+    const rules = [
+        body('nombre').not().isEmpty().withMessage('El nombre es obligatorio').escape(),
+        body('email').isEmail().withMessage('El email es obligatorio').normalizeEmail(),
+    ]
+
+    await Promise.all(rules.map(validation => validation.run(req)));
+    const errores = validationResult(req);
+    //si hay errores
+    if (!errores.isEmpty()) {
+        req.flash('error', errores.array().map(error => error.msg));
+        res.render('editar-perfil', {
+            nombrePagina: 'Editar Perfil',
+            tagline: 'Edita tu perfil en DevJobs',
+            mensajes: req.flash(),
+            cerrarSesion: true,
+            nombre: req.user.nombre
+        })
+        return;
+    }
+    
+    //si toda la validacion es correcta
+    next();
 }
