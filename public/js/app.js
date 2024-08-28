@@ -64,9 +64,9 @@ const limpiarAlertas = () =>{
 //! Eliminar vacante
 const accionesListado = e => {
     e.preventDefault();
-     const url = `${location.origin}/vacantes/eliminar/${e.target.eliminar}`;
-     console.log(url);
-    return;
+     
+  
+   
     
     if(e.target.dataset.eliminar){
         //! Eliminar por axios
@@ -82,12 +82,29 @@ const accionesListado = e => {
           }).then((result) => {
             if (result.isConfirmed) {
               //! Enviar la peticion  con axios
+              const url = `${location.origin}/vacantes/eliminar/${e.target.dataset.eliminar}`;
+              //! Axios para eliminar el registro
+              axios.delete(url, {params: {url}})
+                .then(function(respuesta){
+                    if(respuesta.status === 200){
+                        Swal.fire({
+                            title: "Eliminado!",
+                            text: respuesta.data,
+                            icon: "success"
+                        });
+                        //! TODO: Eliminar del DOM
+                        e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
 
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success"
-              });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Hubo un error',
+                        text: 'No se pudo eliminar'
+                    })
+                })
+              
             }
           });
     }else if(e.target.tagName === 'A'){

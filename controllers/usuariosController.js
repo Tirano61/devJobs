@@ -1,8 +1,7 @@
 
+const multer = require("multer");
 const Usuarios = require("../models/usuarios")
 const { body, validationResult } = require('express-validator');
-
-
 
 
 exports.formCrearCuenta = (req, res) =>{
@@ -70,6 +69,7 @@ exports.formEditarPerfil = (req, res, next) =>{
         usuario: req.user.toObject()
     })
 }
+
 //! Guardar cambios editar perfil
 exports.editarPerfil = async(req, res) =>{
     const usuario = await Usuarios.findById(req.user._id);
@@ -84,8 +84,7 @@ exports.editarPerfil = async(req, res) =>{
     res.redirect('/administracion');
 }
 
-//! Sanitizar y validar formulario de editar perfiles
-
+//! Sanitizar y Validar Formulario de Editar Perfiles
 exports.validarPerfil = async(req, res) =>{
     const rules = [
         body('nombre').not().isEmpty().withMessage('El nombre es obligatorio').escape(),
@@ -110,3 +109,14 @@ exports.validarPerfil = async(req, res) =>{
     //si toda la validacion es correcta
     next();
 }
+
+//! Subir imagen de perfil
+exports.subirImagen = (req, res, next) =>{
+    upload(req, res, function(error){
+        if(error instanceof multer.MulterError){
+            return next();
+        }
+    })
+}
+
+const upload = multer(configuracionMulter).single('imagen');
