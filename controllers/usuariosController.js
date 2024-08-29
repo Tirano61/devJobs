@@ -67,7 +67,8 @@ exports.formEditarPerfil = (req, res, next) =>{
         nombrePagina: 'Edita tu perfil en DevJobs',
         cerrarSesion: true,
         nombre: req.user.nombre,
-        usuario: req.user.toObject()
+        usuario: req.user.toObject(),
+        imagen: req.user.imagen
     })
 }
 
@@ -77,8 +78,9 @@ exports.editarPerfil = async(req, res) =>{
 
     usuario.nombre = req.body.nombre;
     usuario.email = req.body.email;
-    console.log(req.file);
-    return;
+    if(req.file){
+        usuario.imagen = req.file.filename;
+    }
     if(req.body.password){
         usuario.password = req.body.password;
     }
@@ -105,7 +107,8 @@ exports.validarPerfil = async(req, res) =>{
             tagline: 'Edita tu perfil en DevJobs',
             mensajes: req.flash(),
             cerrarSesion: true,
-            nombre: req.user.nombre
+            nombre: req.user.nombre,
+            imagen: req.user.imagen
         })
         return;
     }
@@ -117,15 +120,30 @@ exports.validarPerfil = async(req, res) =>{
 //! Subir imagen de perfil
 exports.subirImagen = (req, res, next) =>{
     upload(req, res, function(error){
-        if(error instanceof multer.MulterError){
+        if(error){
+            if(error instanceof multer.MulterError){
+                if(error.code === 'LIMIT_FILE_SIZE'){
+                    req.flash('error', 'El archivo es muy grande, max: 100kb');
+                }else {
+                    req.flash('error', error.message);
+                }
+                return next();
+            }else{
+                req.flash('error', error.message);
+            }
+            res.redirect('/administracion')
+            return;
+        }else{
             return next();
         }
+        
     });
-    next();
+   
 }
 
 const configuracionMulter = {
     storage: fileStorage = multer.diskStorage({
+        limits: { fileSize: 100000 },
         destination: (req, file, cb) =>{
             cb(null, __dirname+'../../public/uploads/perfiles');
         },
@@ -134,16 +152,16 @@ const configuracionMulter = {
             const nombre = `${shortid.generate()}.${extencion}`;
             
             cb(null, nombre);
-        }
+        },
+        
     }),
     fileFilter(req, file, cb){
         if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg'){
-            console.log('Entro al filter true');
             cb(null, true);
         }else{
-            console.log('Entro al filter false');
-            cb(null, false);
+            cb(new Error('Formato no válido'), false);
         }
-    }
+    },
+    
 }
 const upload = multer(configuracionMulter).single('image');

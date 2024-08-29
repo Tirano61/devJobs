@@ -37,3 +37,17 @@
 <div class="campo centrar-horizontal">
     <a href="/vacantes/editar/{{vacante.url}}" class="btn btn-azul editar-btn" >Editar Vacante</a>
 </div>
+
+<div class="contenedor datos-reclutador">
+    <div class="enviar-datos"></div>
+    <div class="info-reclutador">
+        <h2>Información Reclutador</h2>
+        {{#if vacante.autor.nombre}}
+            <p>{{ vacante.autor.nombre }}</p>
+        {{/if}}
+        {{#if vacante.autor.imagen}}
+            <img class="admin-perfil" src="/uploads/perfiles/{{vacante.autor.imagen}}">
+        {{/if}}
+    </div>
+</div>
+
