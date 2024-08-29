@@ -2,6 +2,7 @@
 const multer = require("multer");
 const Usuarios = require("../models/usuarios")
 const { body, validationResult } = require('express-validator');
+const shortid = require('shortid');
 
 
 exports.formCrearCuenta = (req, res) =>{
@@ -73,9 +74,11 @@ exports.formEditarPerfil = (req, res, next) =>{
 //! Guardar cambios editar perfil
 exports.editarPerfil = async(req, res) =>{
     const usuario = await Usuarios.findById(req.user._id);
-    
+
     usuario.nombre = req.body.nombre;
     usuario.email = req.body.email;
+    console.log(req.file);
+    return;
     if(req.body.password){
         usuario.password = req.body.password;
     }
@@ -86,6 +89,7 @@ exports.editarPerfil = async(req, res) =>{
 
 //! Sanitizar y Validar Formulario de Editar Perfiles
 exports.validarPerfil = async(req, res) =>{
+    console.log(`${req.body.nombre}; ${req.body.email}`);
     const rules = [
         body('nombre').not().isEmpty().withMessage('El nombre es obligatorio').escape(),
         body('email').isEmail().withMessage('El email es obligatorio').normalizeEmail(),
@@ -94,7 +98,7 @@ exports.validarPerfil = async(req, res) =>{
     await Promise.all(rules.map(validation => validation.run(req)));
     const errores = validationResult(req);
     //si hay errores
-    if (!errores.isEmpty()) {
+    if (errores) {
         req.flash('error', errores.array().map(error => error.msg));
         res.render('editar-perfil', {
             nombrePagina: 'Editar Perfil',
@@ -116,7 +120,30 @@ exports.subirImagen = (req, res, next) =>{
         if(error instanceof multer.MulterError){
             return next();
         }
-    })
+    });
+    next();
 }
 
-const upload = multer(configuracionMulter).single('imagen');
+const configuracionMulter = {
+    storage: fileStorage = multer.diskStorage({
+        destination: (req, file, cb) =>{
+            cb(null, __dirname+'../../public/uploads/perfiles');
+        },
+        filename: (req, file, cb) =>{
+            const extencion = file.mimetype.split('/')[1];
+            const nombre = `${shortid.generate()}.${extencion}`;
+            
+            cb(null, nombre);
+        }
+    }),
+    fileFilter(req, file, cb){
+        if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg'){
+            console.log('Entro al filter true');
+            cb(null, true);
+        }else{
+            console.log('Entro al filter false');
+            cb(null, false);
+        }
+    }
+}
+const upload = multer(configuracionMulter).single('image');
