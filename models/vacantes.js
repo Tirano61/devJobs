@@ -51,11 +51,15 @@ const vacantesSchema = new mongoose.Schema({
     }
 });
 
+
 vacantesSchema.pre('save', function(next){
     const url = slug(this.titulo);
     this.url = `${url}-${shortid.generate()}`;
     next();
 })
+
+//! Crear un indice para la busqueda
+vacantesSchema.index({titulo: 'text'});
 
 
 module.exports = mongoose.model( 'Vacante', vacantesSchema );
