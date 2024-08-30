@@ -46,7 +46,16 @@ module.exports = ()=> {
     );
     //! Autentuicar usuarios
     router.get('/iniciar-sesion', usuariosController.formIniciarSesion);
-    router.post('/iniciar-sesion', authController.autenticarUsuario);
+    router.post('/iniciar-sesion', authController.autenticarUsuario); 
+
+    //! Resetear password (email)
+    router.get('/reestablecer-password',authController.formReestablecerPassword);
+    router.post('/reestablecer-password', authController.enviarToken);
+
+    //! Resetear password almacnar en la base de datos
+     router.get('/reestablecer-password/:token', authController.reestablecerPassword);
+     router.post('/reestablecer-password/:token', authController.guardarPassword);
+    
     //! Cerrar Sesion
     router.get('/cerrar-sesion', authController.cerrarSesion)
 
