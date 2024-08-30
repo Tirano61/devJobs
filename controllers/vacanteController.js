@@ -3,6 +3,7 @@ const multer = require('multer');
 const Vacante = require('../models/vacantes');
 const { body, validationResult } = require("express-validator");
 const shortid = require('shortid');
+const { cerrarSesion } = require('./authController');
 
 
 
@@ -192,4 +193,23 @@ exports.contactar = async (req, res, next) => {
 
     res.redirect('/');
 
+}
+
+exports.mostrarCandidatos = async (req,res) =>{
+    const vacante = await Vacante.findById( req.params.id).lean();
+
+    if(vacante.autor != req.user._id.toString()){
+        return next();
+    }
+
+    if(!vacante) return next();
+    res.render('candidatos', {
+        nombrePagina: `Candidatos Vacante - ${vacante.titulo}`,
+        cerrarSesion: true,
+        imagen: req.user.imagen,
+        nombre: req.user.nombre,
+        candidatos: vacante.candidatos
+    })
+
+    
 }

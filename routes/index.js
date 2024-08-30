@@ -74,6 +74,12 @@ module.exports = ()=> {
         vacantesController.contactar
     );
 
+    //! Candidatos
+    router.get('/candidatos/:id',
+        authController.verificarUsuario,
+        vacantesController.mostrarCandidatos
+    )
+
 
     
     return router;
